@@ -171,7 +171,7 @@ namespace Medix.Controllers
                 model.CreatedDate = updateItem.CreatedDate == null ? "" : updateItem.CreatedDate.ToString();
             }
 
-            return Json(updateItem, JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
 
