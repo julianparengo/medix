@@ -1,0 +1,279 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+}
+
+        <!-- Then put toasts within -->
+<div class="toast" role="alert" aria-live="assertive" data-delay="3000" varia-atomic="true" style="position: absolute; top: 1rem; right: 1rem;">
+    <div class="toast-header">
+        <strong class="mr-auto">WorkOrder Count</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body" id="cntWorkOrder"> </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDlg">Add WorkOrder</button>
+        </div>
+        <div class="card-body">
+            <table id="work-table" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>WorkOrderNumber</th>
+                        <th>CreateDate</th>
+                        <th>ETA</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody"></tbody>
+            </table>
+        </div>
+        <div class="card-footer"></div>
+    </div>
+    <div class="modal fade" id="modalDlg" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">WorkOrder</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addWorkOrderForm">
+                        <div class="row mb-sm-3">
+                            <div class="col">
+                                <label>Client: </label>
+                                <select class="col form-control" name="client" id="client"></select>
+                            </div>
+                        </div>
+                        <div class="row mb-sm-3">
+                            <div class="col">
+                                <label>State: </label>
+                                <select class="col form-control" name="state" id="state"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Status: </label>
+                                <select class="col form-control" name="status" id="status"></select>
+                            </div>
+                        </div>
+                        <input id="orderid" name="orderid" type="hidden" value="" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAdd" onclick="AddWorkOrder();">Add WorkOrder</button>
+                    <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="UpdateWorkOrder();">Update WorkOrder</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @section Scripts {
+        <script type="text/javascript">
+            $(() => {
+                LoadWorkOrders();
+                AddClientModal();
+                AddStateModal();
+                AddStatusModal();              
+            });
+
+            LoadWorkOrders = () => {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/GetWorkOrders",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: (res) => { alert(res.d) },
+                    failure: (res) => { alert(res.d) },
+                    success: (res) => {
+                        var thtml = '';
+                        $.each(res, (i, item) => {
+
+                            thtml += ('<tr id="' + item.WorkOrderID + '">' +
+                                '<td>' + item.WorkOrderID + '</td>' +
+                                '<td>' + item.WorkOrderNumber + '</td>' +
+                                '<td>' + item.CreatedDate + '</td>' +
+                                '<td>' + item.ETA + '</td>' +
+                                '<td>' + item.ClientName + '</td>' +
+                                '<td>' + item.StatusName + '</td>' +
+                                '<td><a href="#" class="btn btn-success mr-sm-1" onclick="return GetbyID(' + item.WorkOrderID + ')">Edit</a><a href="#" class="btn btn-danger" onclick="DeletebyID(' + item.WorkOrderID + ')">Delete</a></td>' +
+                                '</tr>');
+                        })
+
+                        $(".tbody").html(thtml);
+                    }
+                });
+            };
+
+            AddStateModal = () => {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/StateResource",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: (res) => { alert(res.d) },
+                    failure: (res) => { alert(res.d) },
+                    success: (res) => {
+                        var thtml = '';
+                        $.each(res, (i, item) => {
+                            thtml += ('<option value="' + item.StateId + '">' + item.Name + '</option>');
+                        })
+                        $("#state").html(thtml);
+                    }
+                });
+            };
+
+            AddStatusModal = () => {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/StatusResource",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: (res) => { alert(res.d) },
+                    failure: (res) => { alert(res.d) },
+                    success: (res) => {
+                        var thtml = '';
+                        $.each(res, (i, item) => {
+                            thtml += ('<option value="' + item.StatusId + '">' + item.Name + '</option>');
+                        })
+                        $("#status").html(thtml);
+                    }
+                });
+            };
+            AddClientModal = () => {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/ClientResource",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: (res) => { alert(res.d) },
+                    failure: (res) => { alert(res.d) },
+                    success: (res) => {
+                        var thtml = '';
+                        $.each(res, (i, item) => {
+                            thtml += ('<option value="' + item.ClientId + '">' + item.Name + '</option>');
+                        })
+                        $("#client").html(thtml);
+                    }
+                });
+            };
+
+
+            AddWorkOrder = () => {
+                var formdata = $("#addWorkOrderForm").serialize();
+                $.ajax({
+                    url: "/Home/AddWorkOrder",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: formdata,
+                    success: (res) => {
+                        console.log(res);
+                        var thtml = ('<tr id="' + res.WorkOrderId + '">' +
+                            '<td>' + res.WorkOrderId + '</td>' +
+                            '<td>' + res.WorkOrderNumber + '</td>' +
+                            '<td>' + res.CreatedDate + '</td>' +
+                            '<td>' + res.ETA + '</td>' +
+                            '<td>' + res.ClientName + '</td>' +
+                            '<td>' + res.StatusName + '</td>' +
+                            '<td><a href="#" onclick="return GetbyID(' + res.WorkOrderId + ')">Edit</a> | <a href="#" onclick="DeletebyID(' + res.WorkOrderId + ')">Delete</a></td>' +
+                            '</tr>');
+                        $(".tbody").append(thtml);
+                        $('#modalDlg').modal('hide');
+                    },
+                    error: (res) => { console.log(res); alert(res.responseText); }
+                })
+            };
+
+            GetbyID = (id) => {
+                $.ajax({
+                    url: "/Home/GetbyId/" + id,
+                    type: "GET",
+                    dataType: 'json',
+                    contentType: 'application/json; charset=UTF-8',
+                    success: (res) => {
+                        $('#client').val(res.ClientID);
+                        $('#state').val(res.StateID);
+                        $('#status').val(res.StatusID);
+                        $("#orderid").val(res.WorkOrderID);
+
+                        $('#modalDlg').modal('show');
+                        $('#btnUpdate').show();
+                        $('#btnAdd').hide();
+                    },
+                })
+            }
+
+            UpdateWorkOrder = () => {
+                var formdata = $("#addWorkOrderForm").serialize();
+                $.ajax({
+                    url: "/Home/UpdateWorkOrder",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: formdata,
+                    success: (res) => {
+                        var nhtml = ('<td>' + res.WorkOrderId + '</td>' +
+                            '<td>' + res.WorkOrderNumber + '</td>' +
+                            '<td>' + res.CreatedDate + '</td>' +
+                            '<td>' + res.ETA + '</td>' +
+                            '<td>' + res.ClientName + '</td>' +
+                            '<td>' + res.StatusName + '</td>' +
+                            '<td><a href="#" onclick="return GetbyID(' + res.WorkOrderId + ')">Edit</a> | <a href="#" onclick="DeletebyID(' + res.WorkOrderId + ')">Delete</a></td>');
+                        $('#' + res.WorkOrderId).html(nhtml);
+                        $('#modalDlg').modal('hide');
+                        $('#btnUpdate').hide();
+                        $('#btnAdd').show();
+                    },
+                    error: (res) => { alert(res.responseText); }
+                })
+            }
+
+            DeletebyID = (id) => {
+                var ans = confirm("Are you sure you want to delete this Record?");
+                if (ans) {
+                    $.ajax({
+                        url: "/Home/DeleteWorkOrder/" + id,
+                        type: "Post",
+                        contentType: "application/json;charset=UTF-8",
+                        dataType: "json",
+                        success: (result) => {
+                            var index = result;
+                            $('tr#' + index).remove();
+                        },
+                        error: (result) => {
+                            alert(result.responseText);
+                        }
+                    });
+                }
+            }
+
+            setInterval(() => {
+                $.ajax({
+                    url: "/Home/WorkOrderCount",
+                    type: "Post",
+                    contentType: "application/json;charset=UTF-8",
+                    dataType: "json",
+                    success: (result) => {
+                        $('#cntWorkOrder').html('WorkOrder Count : ' + result);
+                        $('.toast').toast('show')
+                    },
+                    error: (result) => {
+                        alert(result.responseText);
+                    }
+                })
+            }, 15 * 60 * 1000)
+
+        </script>
+    }
+</div>
