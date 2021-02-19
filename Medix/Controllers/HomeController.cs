@@ -129,6 +129,7 @@ namespace Medix.Controllers
             var statusid = formdata["status"];
             var orderid = formdata["orderid"];
             Sp_GetWorkOrderItem_Result updateItem = new Sp_GetWorkOrderItem_Result();
+            WorkOrderModel model = new WorkOrderModel();
 
             using (MedixEntities entities = new MedixEntities())
             {
@@ -148,7 +149,16 @@ namespace Medix.Controllers
                 }
 
                 Response.StatusCode = (int)HttpStatusCode.OK;
-                updateItem= entities.Sp_GetWorkOrderItem(index).ToList().First();
+                updateItem= entities.Sp_GetWorkOrderItem(Convert.ToInt32(orderid)).ToList().First();
+                model.WorkOrderID = updateItem.WorkOrderId;
+                model.WorkOrderNumber = updateItem.WorkOrderNumber;
+                model.ClientID = updateItem.ClientId;
+                model.ClientName = updateItem.ClientName;
+                model.StateID = updateItem.StateId;
+                model.StatusID = updateItem.StatusId;
+                model.StatusName = updateItem.StatusName;
+                model.ETA = updateItem.ETA == null ? "" : updateItem.ETA.ToString();
+                model.CreatedDate = updateItem.CreatedDate == null ? "" : updateItem.CreatedDate.ToString();
             }
 
             return Json(updateItem, JsonRequestBehavior.AllowGet);
