@@ -21,7 +21,7 @@ namespace Medix.Controllers
             using (MedixEntities entities = new MedixEntities())
             {
                 var lstEntities = entities.Sp_GetWorkOrders().OrderBy(x => x.WorkOrderId).ToList();
-                foreach(var entity in lstEntities)
+                foreach (var entity in lstEntities)
                 {
                     var model = new WorkOrderModel();
                     model.WorkOrderID = entity.WorkOrderId;
@@ -37,8 +37,8 @@ namespace Medix.Controllers
                 }
             }
 
-                
-            return Json(lstModel.OrderBy(x=>x.WorkOrderID), JsonRequestBehavior.AllowGet);
+
+            return Json(lstModel.OrderBy(x => x.WorkOrderID), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -61,14 +61,14 @@ namespace Medix.Controllers
             MedixEntities entities = new MedixEntities();
             return Json(entities.Sp_GetStatus().ToList(), JsonRequestBehavior.AllowGet);
         }
-        
+
         [HttpPost]
         public JsonResult WorkOrderCount()
         {
             MedixEntities entities = new MedixEntities();
             var cnt = entities.Sp_GetWorkOrderCount().ToList().First();
-            
-            return Json(cnt == null? 0: (int)cnt, JsonRequestBehavior.AllowGet);
+
+            return Json(cnt == null ? 0 : (int)cnt, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -76,7 +76,7 @@ namespace Medix.Controllers
         {
             WorkOrderModel model = new WorkOrderModel();
             using (MedixEntities entities = new MedixEntities())
-            {                
+            {
                 var workItem = entities.Sp_GetWorkOrderItem(id).ToList().First();
                 model.WorkOrderID = id;
                 model.ClientID = workItem.ClientId;
@@ -117,7 +117,7 @@ namespace Medix.Controllers
 
                 Response.StatusCode = (int)HttpStatusCode.OK;
             }
-            
+
             return Json(workItem, JsonRequestBehavior.AllowGet);
         }
 
@@ -149,7 +149,7 @@ namespace Medix.Controllers
                 }
 
                 Response.StatusCode = (int)HttpStatusCode.OK;
-                updateItem= entities.Sp_GetWorkOrderItem(Convert.ToInt32(orderid)).ToList().First();
+                updateItem = entities.Sp_GetWorkOrderItem(Convert.ToInt32(orderid)).ToList().First();
                 model.WorkOrderID = updateItem.WorkOrderId;
                 model.WorkOrderNumber = updateItem.WorkOrderNumber;
                 model.ClientID = updateItem.ClientId;
