@@ -93,6 +93,7 @@ namespace Medix.Controllers
             var stateid = formdata["state"];
             var statusid = formdata["status"];
             Sp_GetWorkOrders_Result workItem = new Sp_GetWorkOrders_Result();
+            WorkOrderModel model = new WorkOrderModel();
 
             using (MedixEntities entities = new MedixEntities())
             {
@@ -107,6 +108,15 @@ namespace Medix.Controllers
                     else
                     {
                         workItem = entities.Sp_GetWorkOrders().OrderByDescending(x => x.WorkOrderId).ToList().First();
+                        model.WorkOrderID = workItem.WorkOrderId;
+                        model.WorkOrderNumber = workItem.WorkOrderNumber;
+                        model.ClientID = workItem.ClientId;
+                        model.ClientName = workItem.ClientName;
+                        model.StateID = workItem.StateId;
+                        model.StatusID = workItem.StatusId;
+                        model.StatusName = workItem.StatusName;
+                        model.ETA = workItem.ETA == null ? "" : workItem.ETA.ToString();
+                        model.CreatedDate = workItem.CreatedDate == null ? "" : workItem.CreatedDate.ToString();
                     }
                 }
                 catch (Exception e)
@@ -118,7 +128,7 @@ namespace Medix.Controllers
                 Response.StatusCode = (int)HttpStatusCode.OK;
             }
 
-            return Json(workItem, JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

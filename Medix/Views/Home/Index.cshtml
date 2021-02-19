@@ -179,14 +179,14 @@
                     data: formdata,
                     success: (res) => {
                         console.log(res);
-                        var thtml = ('<tr id="' + res.WorkOrderId + '">' +
-                            '<td>' + res.WorkOrderId + '</td>' +
+                        var thtml = ('<tr id="' + res.WorkOrderID + '">' +
+                            '<td>' + res.WorkOrderID + '</td>' +
                             '<td>' + res.WorkOrderNumber + '</td>' +
                             '<td>' + res.CreatedDate + '</td>' +
                             '<td>' + res.ETA + '</td>' +
                             '<td>' + res.ClientName + '</td>' +
                             '<td>' + res.StatusName + '</td>' +
-                            '<td><a href="#" class="btn btn-success mr-sm-1" onclick="return GetbyID(' + res.WorkOrderId + ')">Edit</a><a href="#" class="btn btn-danger" onclick="DeletebyID(' + res.WorkOrderId + ')">Delete</a></td>' +
+                            '<td><a href="#" class="btn btn-success mr-sm-1" onclick="return GetbyID(' + res.WorkOrderID + ')">Edit</a><a href="#" class="btn btn-danger" onclick="DeletebyID(' + res.WorkOrderID + ')">Delete</a></td>' +
                             '</tr>');
                         $(".tbody").append(thtml);
                         $('#modalDlg').modal('hide');
